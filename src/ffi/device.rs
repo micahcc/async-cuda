@@ -13,12 +13,17 @@ type Result<T> = std::result::Result<T, crate::error::Error>;
 #[repr(C)]
 pub struct CudaDeviceProp {
     // ASCII string identifying the device.
-    // original name: name[256]
     pub name: [u8; 256],
 
     // 16-byte unique identifier.
-    // original name: uuid
     pub uuid: [u8; 16],
+
+    // 8-byte locally unique identifier. Value is undefined on TCC and non-Windows platforms
+    pub luid: [u8; 8],
+
+    //  LUID device node mask. Value is undefined on TCC and non-Windows platforms
+    //  original name: luidDeviceNodeMask
+    pub luid_device_node_mask: u32,
 
     // Total amount of global memory available on the device in bytes.
     // original name: totalGlobalMem
@@ -268,6 +273,10 @@ pub struct CudaDeviceProp {
     // original name: multiGpuBoardGroupID
     pub multi_gpu_board_group_id: i32,
 
+    // Link between the device and the host supports native atomic operations
+    // original name: hostNativeAtomicSupported
+    host_native_atomic_supported: i32,
+
     // Ratio of single precision performance (in floating-point operations per second) to double precision performance.
     // original name: singleToDoublePrecisionPerfRatio
     pub single_to_double_precision_perf_ratio: i32,
@@ -296,6 +305,10 @@ pub struct CudaDeviceProp {
     // original name: cooperativeMultiDeviceLaunch
     pub cooperative_multi_device_launch: i32,
 
+    // Per device maximum shared memory per block usable by special opt in
+    // original name: sharedMemPerBlockOptin
+    pub shared_mem_per_block_optin: usize,
+
     // 1 if the device accesses pageable memory via the host's page tables, and 0 otherwise.
     // original name: pageableMemoryAccessUsesHostPageTables
     pub pageable_memory_access_uses_host_page_tables: i32,
@@ -311,6 +324,10 @@ pub struct CudaDeviceProp {
     // Maximum value of cudaAccessPolicyWindow::num_bytes.
     // original name: accessPolicyMaxWindowSize
     pub access_policy_max_window_size: i32,
+
+    // Shared memory reserved by CUDA driver per block in bytes
+    // original name: reservedSharedMemPerBlock
+    pub reserved_shared_mem_per_block: usize,
 }
 
 impl Default for CudaDeviceProp {
