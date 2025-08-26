@@ -14,7 +14,7 @@ type Result<T> = std::result::Result<T, crate::error::Error>;
 pub struct CudaDeviceProp {
     // ASCII string identifying the device.
     // original name: name[256]
-    pub name: [u8; 256],
+    pub name: [i8; 256],
 
     // 16-byte unique identifier.
     // original name: uuid
