@@ -1,6 +1,3 @@
-use std::ffi::c_char;
-use std::ffi::c_int;
-
 use cpp::cpp;
 
 use crate::device::DeviceId;
@@ -9,6 +6,7 @@ use crate::ffi::result;
 
 type Result<T> = std::result::Result<T, crate::error::Error>;
 
+// Post CUDA 11, NVIDIA has only appended to this struct
 #[derive(Clone, Debug)]
 #[repr(C)]
 pub struct CudaDeviceProp {
@@ -335,6 +333,8 @@ impl Default for CudaDeviceProp {
         CudaDeviceProp {
             name: [0; 256],
             uuid: [0; 16],
+            luid: [0; 8],
+            luid_device_node_mask: 0,
             total_global_mem: 0,
             shared_mem_per_block: 0,
             regs_per_block: 0,
@@ -408,6 +408,9 @@ impl Default for CudaDeviceProp {
             direct_managed_mem_access_from_host: 0,
             max_blocks_per_multi_processor: 0,
             access_policy_max_window_size: 0,
+            host_native_atomic_supported: 0,
+            reserved_shared_mem_per_block: 0,
+            shared_mem_per_block_optin: 0,
         }
     }
 }
