@@ -47,6 +47,7 @@ impl<T: Copy> DeviceTensor<T> {
         ] -> i32 as "std::int32_t" {
             return cudaMalloc(ptr_ptr, n_bytes);
         });
+
         match result!(ret, DevicePtr::from_addr(ptr)) {
             Ok(internal) => Self {
                 shape: shape.to_vec(),
