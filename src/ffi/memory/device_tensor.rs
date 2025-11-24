@@ -148,6 +148,18 @@ impl<T: Copy> DeviceTensor<T> {
 
     /// Get readonly reference to internal [`DevicePtr`].
     #[inline(always)]
+    pub fn as_ptr(&self) -> *const std::ffi::c_void {
+        self.internal.as_ptr()
+    }
+
+    /// Get mutable reference to internal [`DevicePtr`].
+    #[inline(always)]
+    pub fn as_mut_ptr(&mut self) -> *mut std::ffi::c_void {
+        self.internal.as_mut_ptr()
+    }
+
+    /// Get readonly reference to internal [`DevicePtr`].
+    #[inline(always)]
     pub fn as_internal(&self) -> &DevicePtr {
         &self.internal
     }
