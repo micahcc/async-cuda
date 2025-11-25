@@ -609,8 +609,30 @@ mod tests {
 
     #[test]
     fn test_device_properties() {
-        assert!(Device::get_properties(0).is_ok());
-        eprintln!("{:?}", Device::get_properties(0));
+        let props = Device::get_properties(0).expect("Get properties failed");
+        eprintln!("{:?}", props);
+
+        // check that its reasonable ascii
+        // > 32 (space)
+        // <= 126 (tilde)
+        assert!(props
+            .name
+            .iter()
+            .all(|c| *c == 0 || (*c >= 32 && *c <= 126)));
+        assert!(props.total_global_mem > 0);
+        assert!(props.shared_mem_per_block > 0);
+        assert!(props.max_threads_dim[0] > 0);
+        assert!(props.max_threads_dim[1] > 0);
+        assert!(props.max_threads_dim[2] > 0);
+        assert!(props.max_grid_size[0] > 0);
+        assert!(props.max_grid_size[1] > 0);
+        assert!(props.max_grid_size[2] > 0);
+        assert!(props.surface_alignment > 0);
+        assert!(props.memory_clock_rate > 0);
+        assert!(props.memory_bus_width > 0);
+        assert!(props.l2_cache_size > 0);
+        assert!(props.l2_cache_size > 0);
+        assert!(props.multi_processor_count > 0);
     }
 
     #[test]
