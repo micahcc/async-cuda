@@ -459,6 +459,22 @@ impl Default for CudaDeviceProp {
             host_native_atomic_supported: 0,
             reserved_shared_mem_per_block: 0,
             shared_mem_per_block_optin: 0,
+            host_register_supported: 0,
+            sparse_cuda_array_supported: 0,
+            host_register_read_only_supported: 0,
+            timeline_semaphore_interop_supported: 0,
+            memory_pools_supported: 0,
+            gpu_direct_rdma_supported: 0,
+            gpu_direct_rdma_flush_writes_options: 0,
+            gpu_direct_rdma_writes_ordering: 0,
+            memory_pool_supported_handle_types: 0,
+            deferred_mapping_cuda_array_supported: 0,
+            ipc_event_supported: 0,
+            cluster_launch: 0,
+            unified_function_pointers: 0,
+            reserved2: [0; 2],
+            reserved1: 0,
+            reserved: [0; 60],
         }
     }
 }
