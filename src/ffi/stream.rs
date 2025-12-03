@@ -57,6 +57,24 @@ impl Stream {
         )
     }
 
+    pub fn new_non_blocking() -> Result<Self> {
+        let device = Device::get()?;
+        let mut ptr: *mut std::ffi::c_void = std::ptr::null_mut();
+        let ptr_ptr = std::ptr::addr_of_mut!(ptr);
+        let ret = cpp!(unsafe [
+            ptr_ptr as "void**"
+        ] -> i32 as "std::int32_t" {
+            return cudaStreamCreateWithFlags((cudaStream_t*) ptr_ptr, cudaStreamNonBlocking);
+        });
+        result!(
+            ret,
+            Stream {
+                internal: DevicePtr::from_addr(ptr),
+                device,
+            }
+        )
+    }
+
     pub fn synchronize(&self) -> Result<()> {
         Device::set(self.device)?;
         let ptr = self.internal.as_ptr();
