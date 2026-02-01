@@ -13,8 +13,8 @@ type Result<T> = std::result::Result<T, crate::error::Error>;
 /// Refer to [`crate::DeviceTensor`] for documentation.
 pub struct DeviceTensor<T: Copy> {
     pub shape: Vec<usize>,
-    num_elements: usize,
-    n_bytes: usize, // in bytes
+    pub num_elements: usize,
+    pub n_bytes: usize, // in bytes
     internal: DevicePtr,
     device: DeviceId,
     _phantom: std::marker::PhantomData<T>,
@@ -141,11 +141,6 @@ impl<T: Copy> DeviceTensor<T> {
         Ok(this)
     }
 
-    #[inline(always)]
-    pub fn num_elements(&self) -> usize {
-        self.num_elements
-    }
-
     /// Get readonly reference to internal [`DevicePtr`].
     #[inline(always)]
     pub fn as_ptr(&self) -> *const T {
@@ -221,7 +216,7 @@ mod tests {
         assert_eq!(buffer.shape()[0], 120);
         assert_eq!(buffer.shape()[1], 80);
         assert_eq!(buffer.shape()[2], 3);
-        assert_eq!(buffer.num_elements(), 120 * 80 * 3);
+        assert_eq!(buffer.num_elements, 120 * 80 * 3);
     }
 
     #[test]
