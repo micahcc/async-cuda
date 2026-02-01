@@ -146,11 +146,6 @@ impl<T: Copy> DeviceTensor<T> {
         self.num_elements
     }
 
-    #[inline(always)]
-    pub fn num_bytes(&self) -> usize {
-        self.num_bytes
-    }
-
     /// Get readonly reference to internal [`DevicePtr`].
     #[inline(always)]
     pub fn as_ptr(&self) -> *const T {
