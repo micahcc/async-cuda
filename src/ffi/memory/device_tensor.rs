@@ -14,7 +14,7 @@ type Result<T> = std::result::Result<T, crate::error::Error>;
 pub struct DeviceTensor<T: Copy> {
     pub shape: Vec<usize>,
     pub num_elements: usize,
-    pub n_bytes: usize, // in bytes
+    pub num_bytes: usize, // in bytes
     internal: DevicePtr,
     device: DeviceId,
     _phantom: std::marker::PhantomData<T>,
@@ -40,19 +40,19 @@ impl<T: Copy> DeviceTensor<T> {
         let mut ptr: *mut std::ffi::c_void = std::ptr::null_mut();
         let ptr_ptr = std::ptr::addr_of_mut!(ptr);
         let num_elements = shape.iter().product();
-        let n_bytes = num_elements * std::mem::size_of::<T>();
+        let num_bytes = num_elements * std::mem::size_of::<T>();
         let ret = cpp!(unsafe [
             ptr_ptr as "void**",
-            n_bytes as "std::size_t"
+            num_bytes as "std::size_t"
         ] -> i32 as "std::int32_t" {
-            return cudaMalloc(ptr_ptr, n_bytes);
+            return cudaMalloc(ptr_ptr, num_bytes);
         });
 
         match result!(ret, DevicePtr::from_addr(ptr)) {
             Ok(internal) => Self {
                 shape: shape.to_vec(),
                 num_elements,
-                n_bytes,
+                num_bytes,
                 internal,
                 device,
                 _phantom: Default::default(),
@@ -74,15 +74,15 @@ impl<T: Copy> DeviceTensor<T> {
         assert!(array.len() == self.num_elements);
         let src_ptr = self.internal.as_ptr();
         let dst_ptr = array.as_ptr();
-        let n_bytes = self.n_bytes;
+        let num_bytes = self.num_bytes;
         let stream_ptr = stream.as_internal().as_ptr();
         let ret = cpp!(unsafe [
             dst_ptr as "void*",
             src_ptr as "void*",
-            n_bytes as "std::size_t",
+            num_bytes as "std::size_t",
             stream_ptr as "const void*"
         ] -> i32 as "std::int32_t" {
-            return cudaMemcpyAsync(dst_ptr, src_ptr, n_bytes, cudaMemcpyDeviceToHost, (cudaStream_t) stream_ptr);
+            return cudaMemcpyAsync(dst_ptr, src_ptr, num_bytes, cudaMemcpyDeviceToHost, (cudaStream_t) stream_ptr);
         });
         result!(ret)
     }
@@ -98,15 +98,15 @@ impl<T: Copy> DeviceTensor<T> {
         assert!(array.len() == self.num_elements);
         let dst_ptr = self.internal.as_ptr();
         let src_ptr = array.as_ptr();
-        let n_bytes = self.n_bytes;
+        let num_bytes = self.num_bytes;
         let stream_ptr = stream.as_internal().as_ptr();
         let ret = cpp!(unsafe [
             dst_ptr as "void*",
             src_ptr as "void*",
-            n_bytes as "std::size_t",
+            num_bytes as "std::size_t",
             stream_ptr as "const void*"
         ] -> i32 as "std::int32_t" {
-            return cudaMemcpyAsync(dst_ptr, src_ptr, n_bytes, cudaMemcpyHostToDevice, (cudaStream_t) stream_ptr);
+            return cudaMemcpyAsync(dst_ptr, src_ptr, num_bytes, cudaMemcpyHostToDevice, (cudaStream_t) stream_ptr);
         });
         result!(ret)
     }
